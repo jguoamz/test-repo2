@@ -26,6 +26,21 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        if: ${{ always() }}
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          
+      - name: Amazon CodeGuru Reviewer
+        uses: aws-actions/codeguru-reviewer@v1.1
+        if: ${{ always() }}
+        with:          
+          s3_bucket: codeguru-reviewer-fe4d9737-bc03-465c-a9ab-0f50023d4935
+
 
       - name: Upload review result
         if: ${{ github.event_name != 'push' }}
